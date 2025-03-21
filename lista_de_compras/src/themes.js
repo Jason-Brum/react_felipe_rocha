@@ -1,0 +1,88 @@
+const themes = {
+  avioes: {
+    name: "Aviões",
+    backgroundImage: "url('/src/assets/themes/aviao.jpg')",
+    primaryColor: "#cfd8e2",
+    textColor: "#2c2c2c",
+    accentColor: "#d31c27",
+  },
+  carros: {
+    name: "Carros",
+    backgroundImage: "url('/src/assets/themes/carros.jpg')",
+    primaryColor: "#292828",
+    textColor: "#d1cbbf",
+    accentColor: "#5d5d5d",
+  },
+  ceu: {
+    name: "Céu",
+    backgroundImage: "url('/src/assets/themes/ceu.jpg')",
+    primaryColor: "#79a7d3",
+    textColor: "#ffffff",
+    accentColor: "#9cc1e2",
+  },
+  dark: {
+    name: "Dark",
+    backgroundImage: "url('/src/assets/themes/dark.jpg')",
+    primaryColor: "#1e1e1e",
+    textColor: "#ffffff",
+    accentColor: "#4a4a4a",
+  },
+  especiarias: {
+    name: "Especiarias",
+    backgroundImage: "url('/src/assets/themes/especiarias.jpg')",
+    primaryColor: "#c48425",
+    textColor: "#5c3310",
+    accentColor: "#e0b473",
+  },
+  fundo_do_mar: {
+    name: "Fundo do Mar",
+    backgroundImage: "url('/src/assets/themes/fundo_do_mar.jpg')",
+    primaryColor: "#0b3b6e",
+    textColor: "#87bddc",
+    accentColor: "#145a8b",
+  },
+  lgbt: {
+    name: "LGBT",
+    backgroundImage: "url('/src/assets/themes/lgbt.jpg')",
+    primaryColor: "#ff0000",
+    textColor: "#ffff00",
+    accentColor: "#008000",
+  },
+  natureza: {
+    name: "Natureza",
+    backgroundImage: "url('/src/assets/themes/natureza.jpg')",
+    primaryColor: "#6b8e23",
+    textColor: "#ffffff",
+    accentColor: "#3e5521",
+  },
+  paz: {
+    name: "Paz",
+    backgroundImage: "url('/src/assets/themes/paz.jpg')",
+    primaryColor: "#dff2e1",
+    textColor: "#3e5521",
+    accentColor: "#a3d3b1",
+  },
+  psicodelico: {
+    name: "Psicodélico",
+    backgroundImage: "url('/src/assets/themes/psicodelico.jpg')",
+    primaryColor: "#ff00ff",
+    textColor: "#ffff00",
+    accentColor: "#00ff00",
+  },
+  retro: {
+    name: "Retrô",
+    backgroundImage: "url('/src/assets/themes/retro.jpg')",
+    primaryColor: "#d8a373",
+    textColor: "#4b3621",
+    accentColor: "#c48752",
+  },
+  rio_de_janeiro: {
+    name: "Rio de Janeiro",
+    backgroundImage: "url('/src/assets/themes/rio_de_janeiro.jpg')",
+    primaryColor: "#0077be",
+    textColor: "#ffffff",
+    accentColor: "#005073",
+  },
+};
+
+export default themes;
