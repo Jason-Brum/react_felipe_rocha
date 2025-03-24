@@ -1,3 +1,5 @@
+//Ponto de entrada da aplicação React
+
 import { StrictMode } from "react";
 import React from "react";
 import ReactDOM from "react-dom/client";

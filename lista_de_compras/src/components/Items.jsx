@@ -1,17 +1,21 @@
+// Items.jsx
 import { TrashIcon } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 import Button from "./Button";
 
 function Items({ items, onItemClick, onDeleteItemClick }) {
+  const { theme } = useTheme();
+
   return (
     <div>
-      <ul className="space-y-4 p-6 bg-red-100 rounded-md shadow">
+      <ul className={`space-y-4 p-6 rounded-md shadow-md bg-${theme}-100`}>
         {items.map((item) => (
           <li key={item.id} className="flex gap-2 items-center">
             <button
               onClick={() => onItemClick(item.id)}
-              className={`bg-red-400 w-full text-white text-left p-2 rounded-md ${
-                item.isCompleted ? 'line-through' : ''
-              }`}
+              className={`w-full text-left p-2 rounded-md ${
+                item.isCompleted ? "line-through" : ""
+              } bg-${theme}-400 text-white`}
             >
               {item.title} - {item.quantity} und
             </button>

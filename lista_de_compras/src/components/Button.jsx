@@ -1,9 +1,15 @@
-function Button(props) {
+// Button.jsx
+import { useTheme } from "../context/ThemeContext";
+
+function Button({ children, ...props }) {
+  const { theme } = useTheme();
+
   return (
-    <button 
-        {...props}
-        className="bg-red-400 text-white p-2 rounded-md" > 
-        {props.children}
+    <button
+      {...props}
+      className={`bg-${theme}-500 text-white px-4 py-2 rounded-md font-medium`}
+    >
+      {children}
     </button>
   );
 }

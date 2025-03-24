@@ -1,4 +1,5 @@
-// App.jsx
+// App.jsx é o componente principal da aplicação. Ele é responsável por renderizar todos os outros componentes e gerenciar o estado da lista de compras.
+
 import { useEffect, useState } from "react";
 import AddItem from "./components/AddItem";
 import Items from "./components/Items";
@@ -136,3 +137,5 @@ function App() {
 }
 
 export default App;
+
+

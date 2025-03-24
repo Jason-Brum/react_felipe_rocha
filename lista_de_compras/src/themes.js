@@ -1,10 +1,15 @@
+// Arquivo de configuração de temas
+// O arquivo themes.js exporta um objeto com os temas disponíveis na aplicação. Cada tema é um objeto com as seguintes propriedades:
+
 const themes = {
   avioes: {
     name: "Aviões",
     backgroundImage: "url('/src/assets/themes/aviao.jpg')",
     primaryColor: "#cfd8e2",
-    textColor: "#2c2c2c",
+    textColor: "#red",
     accentColor: "#d31c27",
+    selectBackgroundColor: "#e0e7ff",
+    selectTextColor: "#1f2937",
   },
   carros: {
     name: "Carros",
@@ -12,20 +17,18 @@ const themes = {
     primaryColor: "#292828",
     textColor: "#d1cbbf",
     accentColor: "#5d5d5d",
+    selectBackgroundColor: "#e0e7ff",
+    selectTextColor: "#1f2937",
   },
-  ceu: {
-    name: "Céu",
-    backgroundImage: "url('/src/assets/themes/ceu.jpg')",
-    primaryColor: "#79a7d3",
-    textColor: "#ffffff",
-    accentColor: "#9cc1e2",
-  },
+  
   dark: {
     name: "Dark",
     backgroundImage: "url('/src/assets/themes/dark.jpg')",
     primaryColor: "#1e1e1e",
     textColor: "#ffffff",
     accentColor: "#4a4a4a",
+    selectBackgroundColor: "#e0e7ff",
+    selectTextColor: "#1f2937",
   },
   especiarias: {
     name: "Especiarias",
@@ -33,6 +36,8 @@ const themes = {
     primaryColor: "#c48425",
     textColor: "#5c3310",
     accentColor: "#e0b473",
+    selectBackgroundColor: "#e0e7ff",
+    selectTextColor: "#1f2937",
   },
   fundo_do_mar: {
     name: "Fundo do Mar",
@@ -40,20 +45,18 @@ const themes = {
     primaryColor: "#0b3b6e",
     textColor: "#87bddc",
     accentColor: "#145a8b",
+    selectBackgroundColor: "#e0e7ff",
+    selectTextColor: "#1f2937",
   },
-  lgbt: {
-    name: "LGBT",
-    backgroundImage: "url('/src/assets/themes/lgbt.jpg')",
-    primaryColor: "#ff0000",
-    textColor: "#ffff00",
-    accentColor: "#008000",
-  },
+  
   natureza: {
     name: "Natureza",
     backgroundImage: "url('/src/assets/themes/natureza.jpg')",
     primaryColor: "#6b8e23",
     textColor: "#ffffff",
     accentColor: "#3e5521",
+    selectBackgroundColor: "#e0e7ff",
+    selectTextColor: "#1f2937",
   },
   paz: {
     name: "Paz",
@@ -61,20 +64,18 @@ const themes = {
     primaryColor: "#dff2e1",
     textColor: "#3e5521",
     accentColor: "#a3d3b1",
+    selectBackgroundColor: "#e0e7ff",
+    selectTextColor: "#1f2937",
   },
-  psicodelico: {
-    name: "Psicodélico",
-    backgroundImage: "url('/src/assets/themes/psicodelico.jpg')",
-    primaryColor: "#ff00ff",
-    textColor: "#ffff00",
-    accentColor: "#00ff00",
-  },
+  
   retro: {
     name: "Retrô",
     backgroundImage: "url('/src/assets/themes/retro.jpg')",
     primaryColor: "#d8a373",
     textColor: "#4b3621",
     accentColor: "#c48752",
+    selectBackgroundColor: "#e0e7ff",
+    selectTextColor: "#1f2937",
   },
   rio_de_janeiro: {
     name: "Rio de Janeiro",
@@ -82,6 +83,8 @@ const themes = {
     primaryColor: "#0077be",
     textColor: "#ffffff",
     accentColor: "#005073",
+    selectBackgroundColor: "#e0e7ff",
+    selectTextColor: "#1f2937",
   },
 };
 
