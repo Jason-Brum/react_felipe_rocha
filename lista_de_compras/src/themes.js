@@ -4,7 +4,7 @@
 const themes = {
   avioes: {
     name: "Aviões",
-    backgroundImage: "url('/src/assets/themes/aviao.jpg')",
+    backgroundImage: "url('/assets/themes/aviao.jpg')",
     primaryColor: "#cfd8e2",
     textColor: "#red",
     accentColor: "#d31c27",
@@ -13,7 +13,7 @@ const themes = {
   },
   carros: {
     name: "Carros",
-    backgroundImage: "url('/src/assets/themes/carros.jpg')",
+    backgroundImage: "url('/assets/themes/carros.jpg')",
     primaryColor: "#292828",
     textColor: "#d1cbbf",
     accentColor: "#5d5d5d",
@@ -23,7 +23,7 @@ const themes = {
   
   dark: {
     name: "Dark",
-    backgroundImage: "url('/src/assets/themes/dark.jpg')",
+    backgroundImage: "url('/assets/themes/dark.jpg')",
     primaryColor: "#1e1e1e",
     textColor: "#ffffff",
     accentColor: "#4a4a4a",
@@ -32,7 +32,7 @@ const themes = {
   },
   especiarias: {
     name: "Especiarias",
-    backgroundImage: "url('/src/assets/themes/especiarias.jpg')",
+    backgroundImage: "url('/assets/themes/especiarias.jpg')",
     primaryColor: "#c48425",
     textColor: "#5c3310",
     accentColor: "#e0b473",
@@ -41,7 +41,7 @@ const themes = {
   },
   fundo_do_mar: {
     name: "Fundo do Mar",
-    backgroundImage: "url('/src/assets/themes/fundo_do_mar.jpg')",
+    backgroundImage: "url('/assets/themes/fundo_do_mar.jpg')",
     primaryColor: "#0b3b6e",
     textColor: "#87bddc",
     accentColor: "#145a8b",
@@ -51,7 +51,7 @@ const themes = {
   
   natureza: {
     name: "Natureza",
-    backgroundImage: "url('/src/assets/themes/natureza.jpg')",
+    backgroundImage: "url('/assets/themes/natureza.jpg')",
     primaryColor: "#6b8e23",
     textColor: "#ffffff",
     accentColor: "#3e5521",
@@ -60,7 +60,7 @@ const themes = {
   },
   paz: {
     name: "Paz",
-    backgroundImage: "url('/src/assets/themes/paz.jpg')",
+    backgroundImage: "url('/assets/themes/paz.jpg')",
     primaryColor: "#dff2e1",
     textColor: "#3e5521",
     accentColor: "#a3d3b1",
@@ -70,7 +70,7 @@ const themes = {
   
   retro: {
     name: "Retrô",
-    backgroundImage: "url('/src/assets/themes/retro.jpg')",
+    backgroundImage: "url('/assets/themes/retro.jpg')",
     primaryColor: "#d8a373",
     textColor: "#4b3621",
     accentColor: "#c48752",
@@ -79,7 +79,7 @@ const themes = {
   },
   rio_de_janeiro: {
     name: "Rio de Janeiro",
-    backgroundImage: "url('/src/assets/themes/rio_de_janeiro.jpg')",
+    backgroundImage: "url('/assets/themes/rio_de_janeiro.jpg')",
     primaryColor: "#0077be",
     textColor: "#ffffff",
     accentColor: "#005073",

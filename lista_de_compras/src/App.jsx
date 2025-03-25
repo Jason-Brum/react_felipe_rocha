@@ -8,11 +8,14 @@ import { v4 } from 'uuid';
 import Input from "./components/Input";
 import { useTheme } from "./context/ThemeContext";
 import themes from "./themes";
+import { SettingsIcon } from "lucide-react";
 
 function App() {
   const [items, setItems] = useState(JSON.parse(localStorage.getItem('items')) || []);
   const [listName, setListName] = useState(localStorage.getItem('listName') || "Minha Lista de Compras");
   const { theme, changeTheme } = useTheme();
+  const [showThemeOptions, setShowThemeOptions] = useState(false);
+  const [themeSelectorOpen, setThemeSelectorOpen] = useState(false);
 
   const categories = [
     "Bebidas",
@@ -88,15 +91,35 @@ function App() {
             placeholder="Digite o nome da sua lista"
             className="border border-gray-300 px-4 py-2 rounded-md shadow-md text-xl md:text-2xl font-bold w-full text-center"
           />
-          <select
-            value={theme}
-            onChange={(e) => changeTheme(e.target.value)}
-            className="px-4 py-2 rounded-md shadow-md max-h-60 overflow-auto w-full"
-          >
-            {Object.keys(themes).map((themeKey) => (
-              <option key={themeKey} value={themeKey}>{themes[themeKey].name}</option>
-            ))}
-          </select>
+
+          {/* Ícone para selecionar o tema */}
+          <div className="relative ml-2">
+            <button
+              className="text-black px-2 py-1 rounded-full"
+              onClick={() => setThemeSelectorOpen(!themeSelectorOpen)}
+            >
+              ⚙️
+            </button>
+            {themeSelectorOpen && (
+              <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-md z-50">
+                {Object.keys(themes).map((themeKey) => (
+                  <div
+                    key={themeKey}
+                    className={`px-4 py-2 cursor-pointer ${
+                      theme === themeKey ? 'bg-gray-300 font-bold' : 'hover:bg-gray-100'
+                    }`}
+                    style={{ color: 'black' }} // Define a cor preta para todos os nomes de tema
+                    onClick={() => {
+                      changeTheme(themeKey);
+                      setThemeSelectorOpen(false); // Fecha após a seleção
+                    }}
+                  >
+                    {themes[themeKey].name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <AddItem onAddItemSubmit={handleAddItem} categories={categories} />
@@ -137,5 +160,3 @@ function App() {
 }
 
 export default App;
-
-
