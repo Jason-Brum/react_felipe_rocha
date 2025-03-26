@@ -1,6 +1,8 @@
 // App.jsx é o componente principal da aplicação. Ele é responsável por renderizar todos os outros componentes e gerenciar o estado da lista de compras.
 
+// App.jsx
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AddItem from "./components/AddItem";
 import Items from "./components/Items";
 import "./index.css";
@@ -13,9 +15,8 @@ import { SettingsIcon } from "lucide-react";
 function App() {
   const [items, setItems] = useState(JSON.parse(localStorage.getItem('items')) || []);
   const [listName, setListName] = useState(localStorage.getItem('listName') || "Minha Lista de Compras");
-  const { theme, changeTheme } = useTheme();
-  const [showThemeOptions, setShowThemeOptions] = useState(false);
-  const [themeSelectorOpen, setThemeSelectorOpen] = useState(false);
+  const { theme, showBackgroundImage } = useTheme();
+  const navigate = useNavigate();
 
   const categories = [
     "Bebidas",
@@ -74,14 +75,14 @@ function App() {
   }
 
   return (
-    <div className={`min-h-screen w-full flex justify-center p-4 md:p-6`} style={{ 
-      backgroundImage: themes[theme].backgroundImage,
+    <div className={`min-h-screen w-full flex justify-center p-4 md:p-6`} style={{
+      backgroundImage: showBackgroundImage ? themes[theme].backgroundImage : 'none',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
       backgroundColor: themes[theme].primaryColor,
       color: themes[theme].textColor,
-     }}>
+    }}>
       <div className="w-full max-w-lg space-y-4">
         <div className="flex justify-between items-center">
           <Input
@@ -91,35 +92,13 @@ function App() {
             placeholder="Digite o nome da sua lista"
             className="border border-gray-300 px-4 py-2 rounded-md shadow-md text-xl md:text-2xl font-bold w-full text-center"
           />
-
-          {/* Ícone para selecionar o tema */}
-          <div className="relative ml-2">
-            <button
-              className="text-black px-2 py-1 rounded-full"
-              onClick={() => setThemeSelectorOpen(!themeSelectorOpen)}
-            >
-              ⚙️
-            </button>
-            {themeSelectorOpen && (
-              <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-md z-50">
-                {Object.keys(themes).map((themeKey) => (
-                  <div
-                    key={themeKey}
-                    className={`px-4 py-2 cursor-pointer ${
-                      theme === themeKey ? 'bg-gray-300 font-bold' : 'hover:bg-gray-100'
-                    }`}
-                    style={{ color: 'black' }} // Define a cor preta para todos os nomes de tema
-                    onClick={() => {
-                      changeTheme(themeKey);
-                      setThemeSelectorOpen(false); // Fecha após a seleção
-                    }}
-                  >
-                    {themes[themeKey].name}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Botão de Configurações */}
+          <button
+            onClick={() => navigate("/settings")}
+            className="ml-2 p-2 text-gray-600 hover:text-gray-800"
+          >
+            ⚙️
+          </button>
         </div>
 
         <AddItem onAddItemSubmit={handleAddItem} categories={categories} />
@@ -160,3 +139,5 @@ function App() {
 }
 
 export default App;
+
+
