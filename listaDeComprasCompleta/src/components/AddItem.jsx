@@ -1,7 +1,4 @@
-//Na pasta components, estão os componentes reutilizáveis (AddItem, Button, Input)
-
-// Componente AddItem com campos colapsáveis
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from './Input';
 import { useTheme } from "../context/ThemeContext";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
@@ -10,11 +7,21 @@ function AddItem({ onAddItemSubmit, categories }) {
   const [title, setTitle] = useState("");
   const [quantity, setQuantity] = useState("");
   const [category, setCategory] = useState(categories[0]);
-  const [isExpanded, setIsExpanded] = useState(false);
+
+  const [isExpanded, setIsExpanded] = useState(() => {
+    // Tenta carregar do localStorage ao iniciar
+    const saved = localStorage.getItem("addItemExpanded");
+    return saved === "true";
+  });
+
   const { theme } = useTheme();
 
   const toggleExpansion = () => {
-    setIsExpanded((prev) => !prev);
+    setIsExpanded((prev) => {
+      const newValue = !prev;
+      localStorage.setItem("addItemExpanded", newValue);
+      return newValue;
+    });
   };
 
   return (
@@ -64,7 +71,6 @@ function AddItem({ onAddItemSubmit, categories }) {
               onAddItemSubmit(title, quantity, category);
               setTitle("");
               setQuantity("");
-              toggleExpansion();
             }}
             className="px-4 py-2 rounded-md font-medium text-white w-full"
             style={{ backgroundColor: theme.accentColor }}
@@ -78,4 +84,3 @@ function AddItem({ onAddItemSubmit, categories }) {
 }
 
 export default AddItem;
-
