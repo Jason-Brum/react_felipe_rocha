@@ -14,6 +14,10 @@ app.use(express.json());
 // Rotas
 app.use("/items", itemRoutes);
 
+app.use("/test", (req, res) => {
+  res.send("Hello World");
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
