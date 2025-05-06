@@ -1,36 +1,37 @@
--- Criação do banco de dados
 CREATE DATABASE IF NOT EXISTS lista_compras;
 USE lista_compras;
 
--- Criação da tabela de categorias
-CREATE TABLE IF NOT EXISTS categorias (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(100) NOT NULL UNIQUE
+-- Tabela de usuários
+CREATE TABLE usuario (
+    idUsuario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(45) NOT NULL,
+    email VARCHAR(45),
+    cpf VARCHAR(11)
+);items
+
+-- Tabela de listas de compras
+CREATE TABLE lista_de_compras (
+    idLista INT AUTO_INCREMENT PRIMARY KEY,
+    dataDeCriacao DATE NOT NULL,
+    tema VARCHAR(45),
+    nomeDaLista VARCHAR(45),
+    usuario INT,
+    FOREIGN KEY (usuario) REFERENCES usuario(idUsuario) ON DELETE SET NULL
 );
 
--- Inserção das categorias pré-definidas
-INSERT INTO categorias (nome) VALUES
-('Carnes'),
-('Higiene Pessoal'),
-('Limpeza'),
-('Hortifruti'),
-('Laticínios'),
-('Bebidas'),
-('Bebidas Alcoólicas'),
-('Temperos'),
-('Congelados'),
-('Pães, massas e biscoitos'),
-('Mercearia'),
-('Enlatados'),
-('Outros Produtos');
+-- Tabela de categorias
+CREATE TABLE categoria (
+    idCategoria INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(45) NOT NULL
+);
 
--- Criação da tabela de itens
-CREATE TABLE IF NOT EXISTS itens (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(255) NOT NULL,
-  quantidade INT DEFAULT 1,
-  comprado BOOLEAN DEFAULT false,
-  categoria_id INT,
-  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+-- Tabela de itens
+CREATE TABLE item (
+    idItem INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(45) NOT NULL,
+    quantidade FLOAT,
+    idCategoria INT,
+    idLista INT,
+    FOREIGN KEY (idCategoria) REFERENCES categoria(idCategoria) ON DELETE SET NULL,
+    FOREIGN KEY (idLista) REFERENCES lista_de_compras(idLista) ON DELETE CASCADE
 );

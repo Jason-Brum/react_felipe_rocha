@@ -2,6 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const itemRoutes = require("./routes/itemRoutes");
+const usuarioRoutes = require('./routes/usuarioRoutes');
+const categoriaRoutes = require('./routes/categoriaRoutes');
+const listaRoutes = require('./routes/listaRoutes');
+
+
 
 dotenv.config();
 
@@ -13,11 +18,15 @@ app.use(express.json());
 
 // Rotas
 app.use("/items", itemRoutes);
+app.use('/usuarios', usuarioRoutes);
+app.use("/categorias", categoriaRoutes);
+app.use("/listas", listaRoutes);
 
-app.use("/test", (req, res) => {
-  res.send("Hello World");
-});
+
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
+
+
