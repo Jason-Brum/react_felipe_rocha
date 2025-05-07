@@ -5,6 +5,7 @@ const itemRoutes = require("./routes/itemRoutes");
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const listaRoutes = require('./routes/listaRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 
 
@@ -21,6 +22,8 @@ app.use("/items", itemRoutes);
 app.use('/usuarios', usuarioRoutes);
 app.use("/categorias", categoriaRoutes);
 app.use("/listas", listaRoutes);
+app.use('/auth', authRoutes);
+
 
 
 
