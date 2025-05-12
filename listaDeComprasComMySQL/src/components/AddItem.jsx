@@ -1,86 +1,56 @@
-import { useEffect, useState } from "react";
-import Input from './Input';
-import { useTheme } from "../context/ThemeContext";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import React from "react";
+import { useAddItem } from "../hooks/useAddItem";
 
-function AddItem({ onAddItemSubmit, categories }) {
-  const [title, setTitle] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [category, setCategory] = useState(categories[0]);
+const AddItem = () => {
+  const {
+    item,
+    quantidade,
+    categoria,
+    categorias,
+    setItem,
+    setQuantidade,
+    setCategoria,
+    adicionarItem,
+  } = useAddItem();
 
-  const [isExpanded, setIsExpanded] = useState(() => {
-    // Tenta carregar do localStorage ao iniciar
-    const saved = localStorage.getItem("addItemExpanded");
-    return saved === "true";
-  });
-
-  const { theme } = useTheme();
-
-  const toggleExpansion = () => {
-    setIsExpanded((prev) => {
-      const newValue = !prev;
-      localStorage.setItem("addItemExpanded", newValue);
-      return newValue;
-    });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    adicionarItem(); // já trata validação e adição no backend
   };
 
   return (
-    <div className={`space-y-4 p-6 rounded-md shadow-md`} style={{ backgroundColor: theme.selectBackgroundColor }}>
-      <button
-        onClick={toggleExpansion}
-        className="flex justify-between items-center w-full px-4 py-2 rounded-md font-medium text-white"
-        style={{ backgroundColor: theme.accentColor }}
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-4">
+      <input
+        type="text"
+        value={item}
+        onChange={(e) => setItem(e.target.value)}
+        placeholder="Item"
+        className="border p-2 rounded"
+      />
+      <input
+        type="number"
+        value={quantidade}
+        onChange={(e) => setQuantidade(e.target.value)}
+        placeholder="Quantidade"
+        className="border p-2 rounded"
+      />
+      <select key="cat01"
+        value={categoria}
+        onChange={(e) => setCategoria(e.target.value)}
+        className="border p-2 rounded"
       >
-        {isExpanded ? "Recolher" : "Adicionar Item"}
-        {isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+        <option value="">Selecione uma categoria</option>
+        {categorias.map((cat) => (
+          <option key={cat.id} value={cat.nome}>
+            {cat.nome}
+          </option>
+        ))}
+      </select>
+      <button type="submit" className="bg-red-600 text-white p-2 rounded">
+        Adicionar
       </button>
-
-      {isExpanded && (
-        <div className="mt-4 space-y-2 transition-all ease-in-out duration-300">
-          <Input
-            type="text"
-            placeholder="Nome do item"
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-          />
-          <Input
-            type="number"
-            placeholder="Quantidade"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-          />
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="px-4 py-2 rounded-md font-medium w-full"
-            style={{
-              backgroundColor: theme.selectBackgroundColor,
-              color: theme.selectTextColor,
-            }}
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-          <button
-            onClick={() => {
-              if (!title.trim() || !quantity.trim()) {
-                alert("Por favor, preencha o nome e a quantidade");
-                return;
-              }
-              onAddItemSubmit(title, quantity, category);
-              setTitle("");
-              setQuantity("");
-            }}
-            className="px-4 py-2 rounded-md font-medium text-white w-full"
-            style={{ backgroundColor: theme.accentColor }}
-          >
-            Adicionar
-          </button>
-        </div>
-      )}
-    </div>
+    </form>
   );
-}
+};
 
 export default AddItem;
