@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export function useAddItem(onItemAdded) {
+export function useAddItem() {
   const [item, setItem] = useState('');
   const [quantidade, setQuantidade] = useState(1);
   const [categoria, setCategoria] = useState('');
@@ -40,16 +40,17 @@ export function useAddItem(onItemAdded) {
       const novoItem = {
         nome: item,
         quantidade,
-        categoria,
+        idCategoria: categoria,
+        idLista: 1,
       };
 
-      await axios.post('http://localhost:3001/items', novoItem);
+      const response = await axios.post('http://localhost:3001/items/', novoItem);
 
       setItem('');
       setQuantidade(1);
       setCategoria('');
 
-      if (onItemAdded) onItemAdded();
+      return response.data; // retorna o novo item para ser usado no componente
     } catch (err) {
       console.error('Erro ao adicionar item:', err);
       setError('Erro ao adicionar item');

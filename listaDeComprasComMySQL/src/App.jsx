@@ -10,11 +10,12 @@ import themes from "./themes";
 
 function App() {
   const [items, setItems] = useState([]);
-  const [listName, setListName] = useState(localStorage.getItem('listName') || "Minha Lista de Compras");
+  const [listName, setListName] = useState(localStorage.getItem("listName") || "Minha Lista de Compras");
+  const [categorias, setCategorias] = useState([]);
   const { theme, showBackgroundImage } = useTheme();
   const navigate = useNavigate();
 
-  // ✅ nova função para buscar os items no backend
+  // Buscar os itens da lista
   function fetchItems() {
     fetch("http://localhost:3001/items")
       .then((res) => res.json())
@@ -22,14 +23,23 @@ function App() {
       .catch((err) => console.error("Erro ao buscar items:", err));
   }
 
-  // ✅ carregar os items ao iniciar o app
+  // Buscar as categorias
+  function fetchCategorias() {
+    fetch("http://localhost:3001/categorias")
+      .then((res) => res.json())
+      .then((data) => setCategorias(data))
+      .catch((err) => console.error("Erro ao buscar categorias:", err));
+  }
+
+  // Buscar dados ao iniciar
   useEffect(() => {
     fetchItems();
+    fetchCategorias();
   }, []);
 
-  // manter o nome da lista no localStorage
+  // Atualizar nome da lista no localStorage
   useEffect(() => {
-    localStorage.setItem('listName', listName);
+    localStorage.setItem("listName", listName);
   }, [listName]);
 
   function handleItemClick(itemId) {
@@ -51,20 +61,29 @@ function App() {
   function handleClearList() {
     if (window.confirm("Tem certeza que deseja apagar todos os itens da lista?")) {
       setItems([]);
-      // opcional: deletar todos os items no backend também
       fetch("http://localhost:3001/items", { method: "DELETE" })
         .catch((err) => console.error("Erro ao limpar items no backend:", err));
     }
+  }
+
+  function handleItemAdded(novoItem) {
+    setItems((prev) => [...prev, novoItem]);
+  }
+
+  // Obter nome da categoria pelo ID
+  function getCategoriaNome(idCategoria) {
+    const categoria = categorias.find((cat) => cat.idCategoria === idCategoria);
+    return categoria ? categoria.nome : `Categoria ${idCategoria}`;
   }
 
   return (
     <div
       className={`min-h-screen w-full flex justify-center p-4 md:p-6`}
       style={{
-        backgroundImage: showBackgroundImage ? themes[theme].backgroundImage : 'none',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
+        backgroundImage: showBackgroundImage ? themes[theme].backgroundImage : "none",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
         backgroundColor: themes[theme].primaryColor,
         color: themes[theme].textColor,
       }}
@@ -78,7 +97,6 @@ function App() {
             placeholder="Digite o nome da sua lista"
             className="border border-gray-300 px-4 py-2 rounded-md shadow-md text-xl md:text-2xl font-bold w-full text-center"
           />
-          {/* Botão de Configurações */}
           <button
             onClick={() => navigate("/settings")}
             className="ml-2 p-2 text-gray-600 hover:text-gray-800"
@@ -87,16 +105,17 @@ function App() {
           </button>
         </div>
 
-        {/* ✅ Passando o callback para atualizar a lista após adicionar um novo item */}
-        <AddItem onItemAdded={fetchItems} />
+        <AddItem onItemAdded={handleItemAdded} />
 
         <div className="bg-white p-4 rounded-md shadow-md">
-          {Array.from(new Set(items.map((item) => item.categoria))).map((category) => {
-            const categoryItems = items.filter((item) => item.categoria === category);
+          {Array.from(new Set(items.map((item) => item.idCategoria))).map((idCategoria) => {
+            const categoryItems = items.filter((item) => item.idCategoria === idCategoria);
             return categoryItems.length > 0 ? (
-              <div key={category} className="mb-4">
-                <h2 className="text-lg font-bold text-gray-700 border-b border-gray-300 pb-2">{category}</h2>
-                <Items key={categoryItems.id}
+              <div key={idCategoria} className="mb-4">
+                <h2 className="text-lg font-bold text-gray-700 border-b border-gray-300 pb-2">
+                  {getCategoriaNome(idCategoria)}
+                </h2>
+                <Items
                   items={categoryItems}
                   onItemClick={handleItemClick}
                   onDeleteItemClick={handleDeleteItemClick}

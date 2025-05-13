@@ -1,7 +1,7 @@
 import React from "react";
 import { useAddItem } from "../hooks/useAddItem";
 
-const AddItem = () => {
+const AddItem = ({ onItemAdded }) => {
   const {
     item,
     quantidade,
@@ -13,9 +13,12 @@ const AddItem = () => {
     adicionarItem,
   } = useAddItem();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    adicionarItem(); // já trata validação e adição no backend
+    const novoItem = await adicionarItem(); // recebe item novo do backend
+    if (novoItem && onItemAdded) {
+      onItemAdded(novoItem); // atualiza a lista no App
+    }
   };
 
   return (
@@ -34,14 +37,14 @@ const AddItem = () => {
         placeholder="Quantidade"
         className="border p-2 rounded"
       />
-      <select key="cat01"
+      <select
         value={categoria}
         onChange={(e) => setCategoria(e.target.value)}
         className="border p-2 rounded"
       >
         <option value="">Selecione uma categoria</option>
         {categorias.map((cat) => (
-          <option key={cat.id} value={cat.nome}>
+          <option key={cat.idCategoria} value={cat.idCategoria}>
             {cat.nome}
           </option>
         ))}

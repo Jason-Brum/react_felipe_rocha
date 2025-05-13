@@ -12,21 +12,25 @@ const getItems = (req, res) => {
 const addItem = (req, res) => {
   const { nome, quantidade, idCategoria, idLista } = req.body;
 
-  if (!nome || !quantidade || !idCategoria || !idLista) {
-    return res.status(400).json({ erro: "nome, quantidade, idCategoria e idLista são obrigatórios." });
-  }
+  const query = `
+    INSERT INTO item (nome, quantidade, idCategoria, idLista)
+    VALUES (?, ?, ?, ?)
+  `;
 
-  const sql = "INSERT INTO item (nome, quantidade, idCategoria, idLista) VALUES (?, ?, ?, ?)";
-  db.query(sql, [nome, quantidade, idCategoria, idLista], (err, result) => {
+  db.query(query, [nome, quantidade, idCategoria, idLista], function (err, result) {
     if (err) return res.status(500).json({ erro: err.message });
 
-    res.status(201).json({
+    // Retorna o item recém-criado com o ID
+    const newItem = {
       idItem: result.insertId,
       nome,
       quantidade,
       idCategoria,
-      idLista
-    });
+      idLista,
+      isCompleted: false, // padrão
+    };
+
+    res.status(201).json(newItem);
   });
 };
 
