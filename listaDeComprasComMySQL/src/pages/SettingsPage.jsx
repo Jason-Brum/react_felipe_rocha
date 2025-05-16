@@ -4,6 +4,7 @@ import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 import themes from '../themes';
 import { useNavigate } from 'react-router-dom';
+import AddLista from '../components/AddLista';
 
 function SettingsPage() {
   const { theme, changeTheme, showBackgroundImage, toggleBackgroundImage } = useTheme();
@@ -36,6 +37,7 @@ function SettingsPage() {
           />
           <label>Desabilitar imagem de fundo</label>
         </div>
+        <AddLista idUsuario="123"></AddLista>
         <button
         onClick={() => navigate(-1)}
         className="px-4 py-2 rounded-md font-medium border-2"

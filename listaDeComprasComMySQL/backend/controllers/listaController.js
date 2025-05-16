@@ -1,12 +1,15 @@
 const db = require("../db/connection");
 
 const listaController = {
-  // Listar todas as listas
-  listarListas: (req, res) => {
-    db.query("SELECT * FROM lista_de_compras", (err, results) => {
+  // Listar listas de um usuário específico
+  listarListasPorUsuario: (req, res) => {
+    const { idUsuario } = req.params;
+
+    const query = "SELECT * FROM lista_de_compras WHERE idUsuario = ?";
+    db.query(query, [idUsuario], (err, results) => {
       if (err) {
-        console.error("Erro ao listar listas de compras:", err);
-        return res.status(500).json({ erro: "Erro ao buscar listas de compras" });
+        console.error("Erro ao listar listas do usuário:", err);
+        return res.status(500).json({ erro: "Erro ao buscar listas do usuário" });
       }
       res.json(results);
     });
@@ -39,6 +42,25 @@ const listaController = {
         nomeDaLista,
         idUsuario
       });
+    });
+  },
+
+  // Excluir uma lista por ID
+  excluirLista: (req, res) => {
+    const { id } = req.params;
+
+    const query = "DELETE FROM lista_de_compras WHERE idLista = ?";
+    db.query(query, [id], (err, result) => {
+      if (err) {
+        console.error("Erro ao excluir lista:", err);
+        return res.status(500).json({ erro: "Erro ao excluir lista de compras" });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ erro: "Lista não encontrada" });
+      }
+
+      res.status(200).json({ mensagem: "Lista excluída com sucesso" });
     });
   }
 };
