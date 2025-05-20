@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Você pode usar fetch também, mas axios facilita
+import axios from 'axios';
 
 const AddLista = ({ idUsuario }) => {
   const [listas, setListas] = useState([]);
@@ -7,39 +7,76 @@ const AddLista = ({ idUsuario }) => {
   const [editandoId, setEditandoId] = useState(null);
   const [nomeEditado, setNomeEditado] = useState('');
 
-  // useEffect para buscar listas do usuário
   useEffect(() => {
     if (!idUsuario) return;
 
-    axios.get(`http://localhost:3000/listas/${idUsuario}`)
+    axios
+      .get(`http://localhost:3001/listas/${idUsuario}`)
       .then((res) => setListas(res.data))
       .catch((err) => console.error('Erro ao buscar listas:', err));
   }, [idUsuario]);
 
   const adicionarLista = () => {
     if (novaLista.trim() === '') return;
-    const nova = { id: Date.now(), nome: novaLista };
-    setListas([...listas, nova]);
-    setNovaLista('');
+
+    const nova = {
+      nomeDaLista: novaLista,
+      idUsuario: idUsuario,
+      dataDeCriacao: new Date().toISOString().split('T')[0], // yyyy-mm-dd
+      tema: null // ou um valor padrão
+    };
+
+    axios
+      .post('http://localhost:3001/listas', nova)
+      .then((res) => {
+        const novaListaComId = {
+          idLista: res.data.idLista,
+          nomeDaLista: res.data.nomeDaLista,
+          idUsuario: res.data.idUsuario,
+          dataDeCriacao: res.data.dataDeCriacao,
+          tema: res.data.tema,
+        };
+        setListas([...listas, novaListaComId]);
+        setNovaLista('');
+      })
+      .catch((err) => {
+        console.error('Erro ao adicionar lista:', err);
+      });
   };
 
   const removerLista = (id) => {
-    setListas(listas.filter((lista) => lista.id !== id));
+    axios
+      .delete(`http://localhost:3001/listas/${id}`)
+      .then(() => {
+        setListas(listas.filter((lista) => lista.idLista !== id));
+      })
+      .catch((err) => {
+        console.error('Erro ao excluir lista:', err);
+      });
   };
 
   const iniciarEdicao = (id, nomeAtual) => {
     setEditandoId(id);
-    setNomeEditado(nomeAtual);
+    setNomeEditado(nomeAtual); 
   };
 
   const salvarEdicao = (id) => {
-    setListas(
-      listas.map((lista) =>
-        lista.id === id ? { ...lista, nome: nomeEditado } : lista
-      )
-    );
-    setEditandoId(null);
-    setNomeEditado('');
+    axios
+      .put(`http://localhost:3001/listas/${id}`, {
+        nomeDaLista: nomeEditado,
+      })
+      .then(() => {
+        setListas(
+          listas.map((lista) =>
+            lista.idLista === id ? { ...lista, nomeDaLista: nomeEditado } : lista
+          )
+        );
+        setEditandoId(null);
+        setNomeEditado('');
+      })
+      .catch((err) => {
+        console.error('Erro ao editar lista:', err);
+      });
   };
 
   return (
@@ -65,10 +102,10 @@ const AddLista = ({ idUsuario }) => {
       <ul className="space-y-2">
         {listas.map((lista) => (
           <li
-            key={lista.id}
+            key={lista.idLista}
             className="flex items-center justify-between bg-gray-100 p-2 rounded-md"
           >
-            {editandoId === lista.id ? (
+            {editandoId === lista.idLista ? (
               <>
                 <input
                   value={nomeEditado}
@@ -76,7 +113,7 @@ const AddLista = ({ idUsuario }) => {
                   className="flex-1 p-1 border border-gray-300 rounded-md mr-2"
                 />
                 <button
-                  onClick={() => salvarEdicao(lista.id)}
+                  onClick={() => salvarEdicao(lista.idLista)}
                   className="text-green-600 hover:underline mr-2"
                 >
                   Salvar
@@ -90,16 +127,16 @@ const AddLista = ({ idUsuario }) => {
               </>
             ) : (
               <>
-                <span>{lista.nome}</span>
+                <span>{lista.nomeDaLista}</span>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => iniciarEdicao(lista.id, lista.nome)}
+                    onClick={() => iniciarEdicao(lista.idLista, lista.nomeDaLista)}
                     className="text-blue-600 hover:underline"
                   >
                     Renomear
                   </button>
                   <button
-                    onClick={() => removerLista(lista.id)}
+                    onClick={() => removerLista(lista.idLista)}
                     className="text-red-600 hover:underline"
                   >
                     Excluir

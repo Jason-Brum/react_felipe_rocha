@@ -11,4 +11,7 @@ router.post("/", listaController.criarLista);
 // DELETE /listas/:id – excluir uma lista por ID
 router.delete("/:id", listaController.excluirLista);
 
+// PUT /listas/:id – atualizar uma lista por ID
+router.put("/:id", listaController.alterarLista);
+
 module.exports = router;

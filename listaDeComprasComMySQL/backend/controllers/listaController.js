@@ -49,6 +49,7 @@ const listaController = {
   excluirLista: (req, res) => {
     const { id } = req.params;
 
+
     const query = "DELETE FROM lista_de_compras WHERE idLista = ?";
     db.query(query, [id], (err, result) => {
       if (err) {
@@ -62,7 +63,32 @@ const listaController = {
 
       res.status(200).json({ mensagem: "Lista excluída com sucesso" });
     });
-  }
+  },
+
+// Alterar uma lista por ID
+  alterarLista: (req, res) => {
+    const { id } = req.params;
+    const { nomeDaLista} = req.body;
+
+     if (!id || !nomeDaLista) {
+      return res.status(400).json({ erro: "id e nomeDaLista são obrigatórios." });
+    }
+
+    const query = "update lista_de_compras set nomeDaLista = ? where idLista = ?";
+    db.query(query, [nomeDaLista, id], (err, result) => {
+      if (err) {
+        console.error("Erro ao alterar lista:", err);
+        return res.status(500).json({ erro: "Erro ao alterar lista de compras" });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ erro: "Lista não encontrada" });
+      }
+
+      res.status(200).json({ mensagem: "Lista alterada com sucesso" });
+    });
+
+  } 
 };
 
 module.exports = listaController;

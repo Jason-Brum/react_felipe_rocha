@@ -37,7 +37,7 @@ function SettingsPage() {
           />
           <label>Desabilitar imagem de fundo</label>
         </div>
-        <AddLista idUsuario="123"></AddLista>
+        <AddLista idUsuario="1"></AddLista>
         <button
         onClick={() => navigate(-1)}
         className="px-4 py-2 rounded-md font-medium border-2"

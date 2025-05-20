@@ -31,10 +31,22 @@ function App() {
       .catch((err) => console.error("Erro ao buscar categorias:", err));
   }
 
+  const [listas, setListas] = useState([]);
+
+// Buscar listas do backend
+function fetchListas() {
+  fetch("http://localhost:3001/listas")
+    .then((res) => res.json())
+    .then((data) => setListas(data))
+    .catch((err) => console.error("Erro ao buscar listas:", err));
+}
+
+
   // Buscar dados ao iniciar
   useEffect(() => {
     fetchItems();
     fetchCategorias();
+      fetchListas(); 
   }, []);
 
   // Atualizar nome da lista no localStorage
@@ -90,13 +102,21 @@ function App() {
     >
       <div className="w-full max-w-lg space-y-4">
         <div className="flex justify-between items-center">
-          <Input
-            type="text"
+          
+          <select
             value={listName}
             onChange={(e) => setListName(e.target.value)}
-            placeholder="Digite o nome da sua lista"
             className="border border-gray-300 px-4 py-2 rounded-md shadow-md text-xl md:text-2xl font-bold w-full text-center"
-          />
+          >
+            <option value="" disabled>Selecione uma lista</option>
+            {listas.map((lista) => (
+              <option key={lista.id} value={lista.nome}>
+                {lista.nome}
+              </option>
+            ))}
+          </select>
+
+
           <button
             onClick={() => navigate("/settings")}
             className="ml-2 p-2 text-gray-600 hover:text-gray-800"
