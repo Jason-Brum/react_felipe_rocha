@@ -1,7 +1,7 @@
 import React from "react";
 import { useAddItem } from "../hooks/useAddItem";
 
-const AddItem = ({ onItemAdded }) => {
+const AddItem = ({ onItemAdded, idLista }) => {
   const {
     item,
     quantidade,
@@ -11,7 +11,7 @@ const AddItem = ({ onItemAdded }) => {
     setQuantidade,
     setCategoria,
     adicionarItem,
-  } = useAddItem();
+  } = useAddItem(idLista);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
