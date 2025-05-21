@@ -7,13 +7,17 @@ import "./index.css";
 import Input from "./components/Input";
 import { useTheme } from "./context/ThemeContext";
 import themes from "./themes";
+import { list } from "postcss";
 
 function App() {
+  const idUsuario = 1;
   const [items, setItems] = useState([]);
-  const [listName, setListName] = useState(localStorage.getItem("listName") || "Minha Lista de Compras");
+  const [listId, setListId] = useState("");
   const [categorias, setCategorias] = useState([]);
+  const [listas, setListas] = useState([]);
   const { theme, showBackgroundImage } = useTheme();
   const navigate = useNavigate();
+
 
   // Buscar os itens da lista
   function fetchItems() {
@@ -31,14 +35,18 @@ function App() {
       .catch((err) => console.error("Erro ao buscar categorias:", err));
   }
 
-  const [listas, setListas] = useState([]);
 
 // Buscar listas do backend
 function fetchListas() {
-  fetch("http://localhost:3001/listas")
+fetch(`http://localhost:3001/listas/${idUsuario}`)
     .then((res) => res.json())
     .then((data) => setListas(data))
     .catch((err) => console.error("Erro ao buscar listas:", err));
+}
+
+function getIdListaByName(nome) {
+  const lista = listas.find((l) => l.nome === nome);
+  return lista ? lista.idLista : null;
 }
 
 
@@ -46,13 +54,13 @@ function fetchListas() {
   useEffect(() => {
     fetchItems();
     fetchCategorias();
-      fetchListas(); 
+    fetchListas(); 
   }, []);
 
-  // Atualizar nome da lista no localStorage
   useEffect(() => {
-    localStorage.setItem("listName", listName);
-  }, [listName]);
+    console.log("Listas carregadas:", listas);
+      }   , [listas]);
+
 
   function handleItemClick(itemId) {
     setItems((prevItems) =>
@@ -104,17 +112,17 @@ function fetchListas() {
         <div className="flex justify-between items-center">
           
           <select
-            value={listName}
-            onChange={(e) => setListName(e.target.value)}
-            className="border border-gray-300 px-4 py-2 rounded-md shadow-md text-xl md:text-2xl font-bold w-full text-center"
+            value={listId}
+            onChange={(e) => setListId(e.target.value)}
+            className="border border-gray-300 px-4 py-2 rounded-md shadow-md text-xl md:text-2xl"
           >
-            <option value="" disabled>Selecione uma lista</option>
             {listas.map((lista) => (
-              <option key={lista.id} value={lista.nome}>
-                {lista.nome}
+              <option key={lista.idLista} value={lista.idLista}>
+                {lista.nomeDaLista}
               </option>
             ))}
           </select>
+
 
 
           <button
@@ -125,7 +133,9 @@ function fetchListas() {
           </button>
         </div>
 
-        <AddItem onItemAdded={handleItemAdded} />
+        <AddItem onItemAdded={handleItemAdded} 
+         idLista={listId}
+         />
 
         <div className="bg-white p-4 rounded-md shadow-md">
           {Array.from(new Set(items.map((item) => item.idCategoria))).map((idCategoria) => {
