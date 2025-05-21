@@ -1,70 +1,71 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 
 const AddLista = ({ idUsuario }) => {
-  const [listas, setListas] = useState([]);
-  const [novaLista, setNovaLista] = useState('');
-  const [editandoId, setEditandoId] = useState(null);
-  const [nomeEditado, setNomeEditado] = useState('');
+  const [listas, setListas] = useState([]); //Armazena as listas do usuário em um array vazio
+  const [novaLista, setNovaLista] = useState(''); //Valor do input para adicionar uma nova lista
+  const [editandoId, setEditandoId] = useState(null); //Armazena o id da lista que está sendo editada
+  const [nomeEditado, setNomeEditado] = useState(''); //Armazena o novo nome da lista que está sendo editada
 
   useEffect(() => {
-    if (!idUsuario) return;
+    if (!idUsuario) return; //Condição para não buscar listas se o idUsuario não estiver definido
 
-    axios
-      .get(`http://localhost:3001/listas/${idUsuario}`)
-      .then((res) => setListas(res.data))
+    fetch(`http://localhost:3001/listas/${idUsuario}`) //Requisição para buscar as listas do usuário no backend
+      .then((res) => res.json())
+      .then((data) => setListas(data))
       .catch((err) => console.error('Erro ao buscar listas:', err));
   }, [idUsuario]);
 
   const adicionarLista = () => {
-    if (novaLista.trim() === '') return;
+    if (novaLista.trim() === '') return; //Verifica se o campo de nova lista não está vazio
 
     const nova = {
       nomeDaLista: novaLista,
       idUsuario: idUsuario,
-      dataDeCriacao: new Date().toISOString().split('T')[0], // yyyy-mm-dd
-      tema: null // ou um valor padrão
+      dataDeCriacao: new Date().toISOString().split('T')[0],
+      tema: null
     };
 
-    axios
-      .post('http://localhost:3001/listas', nova)
-      .then((res) => {
+    fetch('http://localhost:3001/listas', { //
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(nova),
+    })
+      .then((res) => res.json())
+      .then((data) => {
         const novaListaComId = {
-          idLista: res.data.idLista,
-          nomeDaLista: res.data.nomeDaLista,
-          idUsuario: res.data.idUsuario,
-          dataDeCriacao: res.data.dataDeCriacao,
-          tema: res.data.tema,
+          idLista: data.idLista,
+          nomeDaLista: data.nomeDaLista,
+          idUsuario: data.idUsuario,
+          dataDeCriacao: data.dataDeCriacao,
+          tema: data.tema,
         };
         setListas([...listas, novaListaComId]);
         setNovaLista('');
       })
-      .catch((err) => {
-        console.error('Erro ao adicionar lista:', err);
-      });
+      .catch((err) => console.error('Erro ao adicionar lista:', err));
   };
 
   const removerLista = (id) => {
-    axios
-      .delete(`http://localhost:3001/listas/${id}`)
+    fetch(`http://localhost:3001/listas/${id}`, { //Requisição para remover a lista do backend, o id é passado como parâmetro
+      method: 'DELETE',
+    })
       .then(() => {
-        setListas(listas.filter((lista) => lista.idLista !== id));
+        setListas(listas.filter((lista) => lista.idLista !== id)); //Remove a lista do estado local
       })
-      .catch((err) => {
-        console.error('Erro ao excluir lista:', err);
-      });
+      .catch((err) => console.error('Erro ao excluir lista:', err));
   };
 
   const iniciarEdicao = (id, nomeAtual) => {
     setEditandoId(id);
-    setNomeEditado(nomeAtual); 
+    setNomeEditado(nomeAtual);
   };
 
   const salvarEdicao = (id) => {
-    axios
-      .put(`http://localhost:3001/listas/${id}`, {
-        nomeDaLista: nomeEditado,
-      })
+    fetch(`http://localhost:3001/listas/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nomeDaLista: nomeEditado }),
+    })
       .then(() => {
         setListas(
           listas.map((lista) =>
@@ -74,9 +75,7 @@ const AddLista = ({ idUsuario }) => {
         setEditandoId(null);
         setNomeEditado('');
       })
-      .catch((err) => {
-        console.error('Erro ao editar lista:', err);
-      });
+      .catch((err) => console.error('Erro ao editar lista:', err));
   };
 
   return (
