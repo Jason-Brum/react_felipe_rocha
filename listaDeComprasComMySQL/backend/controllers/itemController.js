@@ -1,12 +1,24 @@
 const db = require("../db/connection");
 
 // Buscar todos os itens
-const getItems = (req, res) => {
+const getAllItems = (req, res) => {
   db.query("SELECT * FROM item", (err, results) => {
     if (err) return res.status(500).json({ erro: err.message });
     res.json(results);
   });
 };
+
+// Buscar itens por ID da lista
+const getItemsByLista = (req, res) => {
+  const { idLista } = req.params;
+  if (isNaN(idLista)) {
+    return res.status(400).json({ erro: "ID da lista inválido" });
+  }
+  db.query("SELECT * FROM item WHERE idLista = ?", [idLista], (err, results) => {
+    if (err) return res.status(500).json({ erro: err.message });
+    res.json(results);
+  });
+}
 
 // Adicionar novo item
 const addItem = (req, res) => {
@@ -44,7 +56,8 @@ const deleteItem = (req, res) => {
 };
 
 module.exports = {
-  getItems,
+  getAllItems,
+  getItemsByLista,
   addItem,
   deleteItem,
 };

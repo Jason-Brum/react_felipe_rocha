@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { getItems, addItem, deleteItem } = require("../controllers/itemController");
+const { getAllItems, getItemsByLista, addItem, deleteItem } = require("../controllers/itemController");
 
-router.get("/", getItems);
+router.get("/", getAllItems);
+router.get("/lista/:idLista", getItemsByLista);
 router.post("/", addItem);
 router.delete("/:id", deleteItem);
 

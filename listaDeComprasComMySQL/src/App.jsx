@@ -20,8 +20,8 @@ function App() {
 
 
   // Buscar os itens da lista
-  function fetchItems() {
-    fetch("http://localhost:3001/items")
+  function fetchItems(idLista) {
+    fetch(`http://localhost:3001/items/lista/${idLista}`)
       .then((res) => res.json())
       .then((data) => setItems(data))
       .catch((err) => console.error("Erro ao buscar items:", err));
@@ -52,14 +52,19 @@ function getIdListaByName(nome) {
 
   // Buscar dados ao iniciar
   useEffect(() => {
-    fetchItems();
-    fetchCategorias();
-    fetchListas(); 
+    fetchCategorias(); 
+    fetchListas();
   }, []);
 
   useEffect(() => {
     console.log("Listas carregadas:", listas);
       }   , [listas]);
+
+  useEffect(() => {
+    if (listId) {
+      fetchItems(listId);    
+    }
+  }, [listId]);
 
 
   function handleItemClick(itemId) {
@@ -92,7 +97,9 @@ function getIdListaByName(nome) {
 
   // Obter nome da categoria pelo ID
   function getCategoriaNome(idCategoria) {
+    console.log("Categorias : ", categorias);
     const categoria = categorias.find((cat) => cat.idCategoria === idCategoria);
+    console.log("Categoria : ", categoria);
     return categoria ? categoria.nome : `Categoria ${idCategoria}`;
   }
 
@@ -114,8 +121,9 @@ function getIdListaByName(nome) {
           <select
             value={listId}
             onChange={(e) => setListId(e.target.value)}
-            className="border border-gray-300 px-4 py-2 rounded-md shadow-md text-xl md:text-2xl"
+            className="flex-1 border border-gray-300 px-4 py-2 rounded-md shadow-md text-xl md:text-2xl"
           >
+            <option value="">Selecione uma lista</option>
             {listas.map((lista) => (
               <option key={lista.idLista} value={lista.idLista}>
                 {lista.nomeDaLista}
@@ -127,7 +135,7 @@ function getIdListaByName(nome) {
 
           <button
             onClick={() => navigate("/settings")}
-            className="ml-2 p-2 text-gray-600 hover:text-gray-800"
+            className="ml-2 p-2 text-gray-600 hover:text-gray-800 rounded-xl"
           >
             ⚙️
           </button>
