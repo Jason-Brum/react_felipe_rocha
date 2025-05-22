@@ -8,6 +8,7 @@ import Input from "./components/Input";
 import { useTheme } from "./context/ThemeContext";
 import themes from "./themes";
 import { list } from "postcss";
+import Items2 from "./components/Items2";
 
 function App() {
   const idUsuario = 1;
@@ -161,6 +162,14 @@ function getIdListaByName(nome) {
               </div>
             ) : null;
           })}
+        </div>
+
+        <div className="bg-white p-4 rounded-md shadow-md">
+            <Items2
+              items={items}
+              onItemClick={handleItemClick}
+              onDeleteItemClick={handleDeleteItemClick}
+            />
         </div>
 
         <div className="flex flex-col md:flex-row gap-2">
