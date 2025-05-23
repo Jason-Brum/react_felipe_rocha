@@ -167,8 +167,9 @@ function getIdListaByName(nome) {
         <div className="bg-white p-4 rounded-md shadow-md">
             <Items2
               items={items}
+              categorias={categorias}
               onItemClick={handleItemClick}
-              onDeleteItemClick={handleDeleteItemClick}
+              onDeleteItemClick={handleDeleteItemClick} 
             />
         </div>
 
