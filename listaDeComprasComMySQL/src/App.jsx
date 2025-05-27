@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddItem from "./components/AddItem";
-import Items from "./components/Items";
+import ListItems from "./components/listItems";
 import "./index.css";
 import { useTheme } from "./context/ThemeContext";
 import themes from "./themes";
@@ -10,7 +10,6 @@ import themes from "./themes";
 function App() {
   const idUsuario = 1;
   const [listId, setListId] = useState("");
-  const [categorias, setCategorias] = useState([]);
   const [listas, setListas] = useState([]);
   const { theme, showBackgroundImage } = useTheme();
   const navigate = useNavigate();
@@ -29,11 +28,6 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
     fetchListas();
   }, []);
 
-
-  function handleDeleteItemClick(itemId) {
-    setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
-  }
-
   function handlePrint() {
     window.print();
   }
@@ -47,16 +41,9 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
   }
 
   function handleItemAdded(novoItem) {
-    setItems((prev) => [...prev, novoItem]);
+    setListId(novoItem.idLista);
   }
 
-  // Obter nome da categoria pelo ID
-  function getCategoriaNome(idCategoria) {
-    console.log("Categorias : ", categorias);
-    const categoria = categorias.find((cat) => cat.idCategoria === idCategoria);
-    console.log("Categoria : ", categoria);
-    return categoria ? categoria.nome : `Categoria ${idCategoria}`;
-  }
 
   return (
     <div
@@ -102,10 +89,7 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
 
         <div className="bg-white p-4 rounded-md shadow-md">
           
-                <Items
-                  idLista={listId}
-                  onDeleteItemClick={handleDeleteItemClick}
-                />
+               <ListItems idLista={listId}/>
 
         </div>
 

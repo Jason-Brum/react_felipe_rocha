@@ -6,9 +6,11 @@ import Button from "./Button";
 import { useState, useEffect } from "react";
 
 
-function Items({onDeleteItemClick, idLista}) {
+function ListItems({idLista}) {
   const { theme } = useTheme();
   const [items, setItems] = useState([]);
+
+
 
   function fetchItems(idLista) {
     fetch(`http://localhost:3001/items/lista/${idLista}`)
@@ -17,20 +19,12 @@ function Items({onDeleteItemClick, idLista}) {
       .catch((err) => console.error("Erro ao buscar items:", err));
   }
 
+  function onDeleteItemClick(itemId) {
+    setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+  }
+
   function onItemClick(itemId) {
-    setItems((prevItems) => {
-      console.log("Itens antes da atualização:", prevItems);
-      prevItems.map((item) => {
-        if (item.idItem === itemId) {
-           const item2 = { ...item, isCompleted: !item.isCompleted };
-          return item2;
-        } else {
-          return item; 
-        }
-      })
-      console.log("Itens após a atualização:", prevItems);
-      return prevItems;
-    });
+    setItems((prevItems) => prevItems.map((item) => item.idItem === itemId ? { ...item, isCompleted: !item.isCompleted } : item))
   }
 
   useEffect(() => {
@@ -67,4 +61,4 @@ function Items({onDeleteItemClick, idLista}) {
   );
 }
 
-export default Items;
+export default ListItems;
