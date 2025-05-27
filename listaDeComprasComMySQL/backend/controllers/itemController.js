@@ -16,7 +16,19 @@ const getItemsByLista = (req, res) => {
   }
   db.query("SELECT i.idItem, i.nome, i.quantidade, i.estado, i.dataCompra, i.idCategoria, i.idLista, c.nome as dsCategoria FROM item i , categoria c where i.idCategoria = c.idCategoria and i.idLista = ? order by 8 asc;", [idLista], (err, results) => {
     if (err) return res.status(500).json({ erro: err.message });
-    res.json(results);
+    const retorno = results.map(item => ({
+      idItem: item.idItem,
+      nome: item.nome,
+      quantidade: item.quantidade,
+      estado: item.estado,
+      dataCompra: item.dataCompra,
+      idCategoria: item.idCategoria,
+      idLista: item.idLista,
+      dsCategoria: item.dsCategoria, // Adiciona o nome da categoria
+      isCompleted: item.estado === 'COMPLETO' // Define isCompleted com base no estado
+    }));
+    res.json(retorno);
+
   });
 }
 

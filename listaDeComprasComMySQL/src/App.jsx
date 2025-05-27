@@ -16,15 +16,6 @@ function App() {
   const navigate = useNavigate();
   
 
-  // Buscar as categorias
-  function fetchCategorias() {
-    fetch("http://localhost:3001/categorias")
-      .then((res) => res.json())
-      .then((data) => setCategorias(data))
-      .catch((err) => console.error("Erro ao buscar categorias:", err));
-  }
-
-
 // Buscar listas do backend
 function fetchListas() {
 fetch(`http://localhost:3001/listas/${idUsuario}`)
@@ -34,23 +25,10 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
 }
 
   // Buscar dados ao iniciar
-  useEffect(() => {
-    fetchCategorias(); 
+  useEffect(() => { 
     fetchListas();
   }, []);
 
-  useEffect(() => {
-    console.log("Listas carregadas:", listas);
-      }   , [listas]);
-
-
-  function handleItemClick(itemId) {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId ? { ...item, isCompleted: !item.isCompleted } : item
-      )
-    );
-  }
 
   function handleDeleteItemClick(itemId) {
     setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
@@ -126,8 +104,6 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
           
                 <Items
                   idLista={listId}
-                  items={items}
-                  onItemClick={handleItemClick}
                   onDeleteItemClick={handleDeleteItemClick}
                 />
 

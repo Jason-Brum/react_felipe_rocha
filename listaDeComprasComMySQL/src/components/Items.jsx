@@ -3,9 +3,10 @@
 import { TrashIcon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import Button from "./Button";
+import { useState, useEffect } from "react";
 
 
-function Items({ items, onItemClick, onDeleteItemClick, idLista}) {
+function Items({onDeleteItemClick, idLista}) {
   const { theme } = useTheme();
   const [items, setItems] = useState([]);
 
@@ -16,17 +17,33 @@ function Items({ items, onItemClick, onDeleteItemClick, idLista}) {
       .catch((err) => console.error("Erro ao buscar items:", err));
   }
 
+  function onItemClick(itemId) {
+    setItems((prevItems) => {
+      console.log("Itens antes da atualização:", prevItems);
+      prevItems.map((item) => {
+        if (item.idItem === itemId) {
+           const item2 = { ...item, isCompleted: !item.isCompleted };
+          return item2;
+        } else {
+          return item; 
+        }
+      })
+      console.log("Itens após a atualização:", prevItems);
+      return prevItems;
+    });
+  }
+
   useEffect(() => {
-    if (listId) {
-      fetchItems(listId);    
+    if (idLista) {
+      fetchItems(idLista);    
     }
-  }, [listId]);
+  }, [idLista]);
 
 
   return (
     <div>
       <ul className="space-y-2 p-2 rounded-md shadow-md" style={{ backgroundColor: theme.primaryColor }}>
-        {items.map((item) => (
+        { items && items.map((item) => (
           <li key={item.idItem} className="flex gap-2 items-center">
             <button
               onClick={() => onItemClick(item.idItem)}
