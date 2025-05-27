@@ -1,12 +1,27 @@
-// Items.jsx
 
 // Items.jsx
 import { TrashIcon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import Button from "./Button";
 
-function Items({ items, onItemClick, onDeleteItemClick }) {
+
+function Items({ items, onItemClick, onDeleteItemClick, idLista}) {
   const { theme } = useTheme();
+  const [items, setItems] = useState([]);
+
+  function fetchItems(idLista) {
+    fetch(`http://localhost:3001/items/lista/${idLista}`)
+      .then((res) => res.json())
+      .then((data) => setItems(data))
+      .catch((err) => console.error("Erro ao buscar items:", err));
+  }
+
+  useEffect(() => {
+    if (listId) {
+      fetchItems(listId);    
+    }
+  }, [listId]);
+
 
   return (
     <div>
@@ -20,7 +35,7 @@ function Items({ items, onItemClick, onDeleteItemClick }) {
               } text-white`}
               style={{ backgroundColor: theme.accentColor }}
             >
-              {item.nome} - {item.quantidade} und
+              {item.dsCategoria} - {item.nome} - {item.quantidade} und
             </button>
             <Button onClick={() => onDeleteItemClick(item.idItem)}
               className="p-1 rounded-md"

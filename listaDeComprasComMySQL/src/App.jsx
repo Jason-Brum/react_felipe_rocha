@@ -4,28 +4,17 @@ import { useNavigate } from "react-router-dom";
 import AddItem from "./components/AddItem";
 import Items from "./components/Items";
 import "./index.css";
-import Input from "./components/Input";
 import { useTheme } from "./context/ThemeContext";
 import themes from "./themes";
-import { list } from "postcss";
 
 function App() {
   const idUsuario = 1;
-  const [items, setItems] = useState([]);
   const [listId, setListId] = useState("");
   const [categorias, setCategorias] = useState([]);
   const [listas, setListas] = useState([]);
   const { theme, showBackgroundImage } = useTheme();
   const navigate = useNavigate();
-
-
-  // Buscar os itens da lista
-  function fetchItems(idLista) {
-    fetch(`http://localhost:3001/items/lista/${idLista}`)
-      .then((res) => res.json())
-      .then((data) => setItems(data))
-      .catch((err) => console.error("Erro ao buscar items:", err));
-  }
+  
 
   // Buscar as categorias
   function fetchCategorias() {
@@ -44,12 +33,6 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
     .catch((err) => console.error("Erro ao buscar listas:", err));
 }
 
-function getIdListaByName(nome) {
-  const lista = listas.find((l) => l.nome === nome);
-  return lista ? lista.idLista : null;
-}
-
-
   // Buscar dados ao iniciar
   useEffect(() => {
     fetchCategorias(); 
@@ -59,12 +42,6 @@ function getIdListaByName(nome) {
   useEffect(() => {
     console.log("Listas carregadas:", listas);
       }   , [listas]);
-
-  useEffect(() => {
-    if (listId) {
-      fetchItems(listId);    
-    }
-  }, [listId]);
 
 
   function handleItemClick(itemId) {
@@ -146,21 +123,14 @@ function getIdListaByName(nome) {
          />
 
         <div className="bg-white p-4 rounded-md shadow-md">
-          {Array.from(new Set(items.map((item) => item.idCategoria))).map((idCategoria) => {
-            const categoryItems = items.filter((item) => item.idCategoria === idCategoria);
-            return categoryItems.length > 0 ? (
-              <div key={idCategoria} className="mb-4">
-                <h2 className="text-lg font-bold text-gray-700 border-b border-gray-300 pb-2">
-                  {getCategoriaNome(idCategoria)}
-                </h2>
+          
                 <Items
-                  items={categoryItems}
+                  idLista={listId}
+                  items={items}
                   onItemClick={handleItemClick}
                   onDeleteItemClick={handleDeleteItemClick}
                 />
-              </div>
-            ) : null;
-          })}
+
         </div>
 
         <div className="flex flex-col md:flex-row gap-2">

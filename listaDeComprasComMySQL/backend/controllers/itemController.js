@@ -14,7 +14,7 @@ const getItemsByLista = (req, res) => {
   if (isNaN(idLista)) {
     return res.status(400).json({ erro: "ID da lista inválido" });
   }
-  db.query("SELECT * FROM item WHERE idLista = ?", [idLista], (err, results) => {
+  db.query("SELECT i.idItem, i.nome, i.quantidade, i.estado, i.dataCompra, i.idCategoria, i.idLista, c.nome as dsCategoria FROM item i , categoria c where i.idCategoria = c.idCategoria and i.idLista = ? order by 8 asc;", [idLista], (err, results) => {
     if (err) return res.status(500).json({ erro: err.message });
     res.json(results);
   });
