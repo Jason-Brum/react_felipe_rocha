@@ -8,7 +8,7 @@ import Input from "./components/Input";
 import { useTheme } from "./context/ThemeContext";
 import themes from "./themes";
 import { list } from "postcss";
-import Items2 from "./components/Items2";
+import Items3 from "./components/Items3";
 
 function App() {
   const idUsuario = 1;
@@ -20,23 +20,6 @@ function App() {
   const navigate = useNavigate();
 
 
-  // Buscar os itens da lista
-  function fetchItems(idLista) {
-    fetch(`http://localhost:3001/items/lista/${idLista}`)
-      .then((res) => res.json())
-      .then((data) => setItems(data))
-      .catch((err) => console.error("Erro ao buscar items:", err));
-  }
-
-  // Buscar as categorias
-  function fetchCategorias() {
-    fetch("http://localhost:3001/categorias")
-      .then((res) => res.json())
-      .then((data) => setCategorias(data))
-      .catch((err) => console.error("Erro ao buscar categorias:", err));
-  }
-
-
 // Buscar listas do backend
 function fetchListas() {
 fetch(`http://localhost:3001/listas/${idUsuario}`)
@@ -45,27 +28,16 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
     .catch((err) => console.error("Erro ao buscar listas:", err));
 }
 
-function getIdListaByName(nome) {
-  const lista = listas.find((l) => l.nome === nome);
-  return lista ? lista.idLista : null;
-}
-
-
   // Buscar dados ao iniciar
   useEffect(() => {
-    fetchCategorias(); 
     fetchListas();
   }, []);
 
   useEffect(() => {
-    console.log("Listas carregadas:", listas);
-      }   , [listas]);
+    console.log("ID da LISTA:", listId);
+      }   , [listId]);
 
-  useEffect(() => {
-    if (listId) {
-      fetchItems(listId);    
-    }
-  }, [listId]);
+  
 
 
   function handleItemClick(itemId) {
@@ -98,9 +70,7 @@ function getIdListaByName(nome) {
 
   // Obter nome da categoria pelo ID
   function getCategoriaNome(idCategoria) {
-    console.log("Categorias : ", categorias);
     const categoria = categorias.find((cat) => cat.idCategoria === idCategoria);
-    console.log("Categoria : ", categoria);
     return categoria ? categoria.nome : `Categoria ${idCategoria}`;
   }
 
@@ -146,31 +116,10 @@ function getIdListaByName(nome) {
          idLista={listId}
          />
 
-        <div className="bg-white p-4 rounded-md shadow-md">
-          {Array.from(new Set(items.map((item) => item.idCategoria))).map((idCategoria) => {
-            const categoryItems = items.filter((item) => item.idCategoria === idCategoria);
-            return categoryItems.length > 0 ? (
-              <div key={idCategoria} className="mb-4">
-                <h2 className="text-lg font-bold text-gray-700 border-b border-gray-300 pb-2">
-                  {getCategoriaNome(idCategoria)}
-                </h2>
-                <Items
-                  items={categoryItems}
-                  onItemClick={handleItemClick}
-                  onDeleteItemClick={handleDeleteItemClick}
-                />
-              </div>
-            ) : null;
-          })}
-        </div>
 
         <div className="bg-white p-4 rounded-md shadow-md">
-            <Items2
-              items={items}
-              categorias={categorias}
-              onItemClick={handleItemClick}
-              onDeleteItemClick={handleDeleteItemClick} 
-            />
+            <Items3 idLista={listId} />
+          
         </div>
 
         <div className="flex flex-col md:flex-row gap-2">
