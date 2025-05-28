@@ -34,7 +34,8 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
 
   function handleClearList() {
     if (window.confirm("Tem certeza que deseja apagar todos os itens da lista?")) {
-      fetch("http://localhost:3001/items", { method: "DELETE" })
+      fetch(`http://localhost:3001/items/lista/${listId}`, { method: "DELETE" })
+      .then(() => setListId(listId))
         .catch((err) => console.error("Erro ao limpar items no backend:", err));
     }
   }
@@ -100,10 +101,10 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
             Imprimir Lista
           </button>
           <button
-            onClick={handleClearList}
+            onClick={handleClearList} 
             className="bg-opacity-80 text-white px-4 py-2 rounded-md w-full md:w-1/2 font-medium"
           >
-            Limpar Lista
+            Limpar Lista 
           </button>
         </div>
       </div>

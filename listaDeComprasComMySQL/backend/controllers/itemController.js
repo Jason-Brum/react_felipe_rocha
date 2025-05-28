@@ -68,9 +68,19 @@ const deleteItem = (req, res) => {
   });
 };
 
+const deleteItemByIdLista = (req, res) => {
+  const { idLista } = req.params;
+  db.query("DELETE FROM item WHERE idLista = ?", [idLista], (err) => {
+        console.log(`Item(s) com IdLista ${idLista} deletado com sucesso.`);
+    if (err) return res.status(500).json({ erro: err.message });
+    res.status(204).json({idLista});
+  });
+};
+
 module.exports = {
   getAllItems,
   getItemsByLista,
   addItem,
   deleteItem,
+  deleteItemByIdLista,
 };
