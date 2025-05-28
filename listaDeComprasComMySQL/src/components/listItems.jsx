@@ -20,36 +20,24 @@ function ListItems({idLista}) {
 
 
 function onDeleteItemClick(itemId) {
-  setItems((prevItems) => prevItems.filter((item) => item.idItem !== itemId));
-  console.log("Tentando deletar item no backend:", itemId);
 
   fetch(`http://localhost:3001/items/${itemId}`, {
     method: "DELETE",
   })
   .then(response => {
-    if (!response.ok) {
-      
+    if (response.ok) {
+      setItems((prevItems) => prevItems.filter((item) => item.idItem !== itemId));
+    } else {
       console.error("Erro ao deletar item no backend:", response.statusText);
       alert("Falha ao deletar o item no servidor. A lista será recarregada.");
-      
-      if (idLista) { 
-        fetchItems(idLista);
-      }
-    } else {
-      console.log("Item deletado com sucesso no backend:", itemId);
-      
     }
   })
   .catch(err => {
     console.error("Erro na requisição para deletar item:", err);
     alert("Erro de rede ao tentar deletar o item. A lista será recarregada.");
-    
-    if (idLista) {
-      fetchItems(idLista);
-    }
   });
 }
-// ...
+
 
   function onItemClick(itemId) {
     setItems((prevItems) => prevItems.map((item) => item.idItem === itemId ? { ...item, isCompleted: !item.isCompleted } : item))

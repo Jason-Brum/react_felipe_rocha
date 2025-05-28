@@ -34,7 +34,6 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
 
   function handleClearList() {
     if (window.confirm("Tem certeza que deseja apagar todos os itens da lista?")) {
-      setItems([]);
       fetch("http://localhost:3001/items", { method: "DELETE" })
         .catch((err) => console.error("Erro ao limpar items no backend:", err));
     }
