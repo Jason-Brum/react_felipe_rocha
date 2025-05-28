@@ -62,8 +62,9 @@ const addItem = (req, res) => {
 const deleteItem = (req, res) => {
   const { id } = req.params;
   db.query("DELETE FROM item WHERE idItem = ?", [id], (err) => {
+        console.log(`Item com ID ${id} deletado com sucesso.`);
     if (err) return res.status(500).json({ erro: err.message });
-    res.sendStatus(204);
+    res.status(204).json({id});
   });
 };
 
