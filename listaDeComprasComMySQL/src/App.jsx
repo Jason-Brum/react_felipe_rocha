@@ -11,6 +11,7 @@ function App() {
   const idUsuario = 1;
   const [listId, setListId] = useState("");
   const [listas, setListas] = useState([]);
+  const [triggerUpdate, setTriggerUpdate] = useState(0); // Para forçar atualização de listas
   const { theme, showBackgroundImage } = useTheme();
   const navigate = useNavigate();
   
@@ -42,6 +43,7 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
 
   function handleItemAdded(novoItem) {
     setListId(novoItem.idLista);
+    setTriggerUpdate((prev) => prev + 1); // Força atualização de listas
   }
 
 
@@ -89,7 +91,7 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
 
         <div className="bg-white p-4 rounded-md shadow-md">
           
-               <ListItems idLista={listId}/>
+               <ListItems idLista={listId} triggerUpdateChange={triggerUpdate}/>
 
         </div>
 

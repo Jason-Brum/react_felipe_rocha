@@ -3,7 +3,7 @@ import { useTheme } from "../context/ThemeContext";
 import Button from "./Button";
 import { useState, useEffect, useMemo } from "react"; 
 
-function ListItems({ idLista }) {
+function ListItems({ idLista, triggerUpdateChange }) {
   const { theme } = useTheme();
   const [items, setItems] = useState([]);
 
@@ -50,7 +50,7 @@ function ListItems({ idLista }) {
     } else {
       setItems([]); 
     }
-  }, [idLista]);
+  }, [idLista, triggerUpdateChange]); // Recarrega os itens quando idLista ou triggerUpdateChange mudar
 
   // Agrupa os itens por categoria usando useMemo para otimização
   const groupedItems = useMemo(() => {
