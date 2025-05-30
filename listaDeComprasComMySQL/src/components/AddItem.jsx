@@ -1,5 +1,6 @@
 import React from "react";
 import { useAddItem } from "../hooks/useAddItem";
+import { useEffect } from "react";
 
 const AddItem = ({ onItemAdded, idLista }) => {
   const {
@@ -12,18 +13,26 @@ const AddItem = ({ onItemAdded, idLista }) => {
     setQuantidade,
     setCategoria,
     adicionarItem,
+    setErros, //Função para atualizar os erros de validação
   } = useAddItem();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Adicionando item:", { item, quantidade, categoria, idLista });
     const novoItem = await adicionarItem(idLista);
     if (novoItem && onItemAdded) {
       onItemAdded(novoItem);
     }
   };
 
+  useEffect(() => {
+      setErros({...erros, idLista:''}); // Limpa os erros ao iniciar o componente
+    }, [idLista]);
+
   return ( //Cada campo agora é renderizado dentro de uma div exclusiva para que o erro de validação apareça logo abaixo do campo correspondente
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-4">
+      {erros.idLista && <p className="text-red-500 text-sm mt-1">{erros.idLista}</p>} 
+
       <div>
         <input
           type="text"

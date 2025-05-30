@@ -15,11 +15,12 @@ export const useAddItem = () => {
   }, []);
 
   const adicionarItem = async (idLista) => {
+    console.log("Verificação:", idLista);
     const novosErros = {}; //Novo objeto para armazenar os erros de validação por campo
     if (!item) {novosErros.item = "Campo item é obrigatório";}
     if (!quantidade) {novosErros.quantidade = "Campo quantidade é obrigatório";}
     if (!categoria) {novosErros.categoria = "A categoria deve ser selecionada";}
-    if (!idLista) {novosErros.idLista = "Nenhuma lista foi selecionada";}
+    if (idLista == '') {novosErros.idLista = "Nenhuma lista foi selecionada";}
 
     if (Object.keys(novosErros).length > 0) {
       setErros(novosErros);
@@ -70,5 +71,6 @@ export const useAddItem = () => {
     setQuantidade,
     setCategoria,
     adicionarItem,
+    setErros, // Função para atualizar os erros de validação
   };
 };

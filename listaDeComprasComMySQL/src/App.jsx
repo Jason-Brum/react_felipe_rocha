@@ -36,7 +36,7 @@ fetch(`http://localhost:3001/listas/${idUsuario}`)
   function handleClearList() {
     if (window.confirm("Tem certeza que deseja apagar todos os itens da lista?")) {
       fetch(`http://localhost:3001/items/lista/${listId}`, { method: "DELETE" })
-      .then(() => setListId(listId))
+      .then(() => setTriggerUpdate((prev) => prev + 1)) // Força atualização de listas após limpar
         .catch((err) => console.error("Erro ao limpar items no backend:", err));
     }
   }
