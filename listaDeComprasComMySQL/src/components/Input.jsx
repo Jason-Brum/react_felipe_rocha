@@ -1,5 +1,4 @@
 // Input.jsx
-// Input.jsx
 import { useTheme } from "../context/ThemeContext";
 
 function Input(props) {

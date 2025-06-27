@@ -1,17 +1,18 @@
-const db = require("../db/connection");
+const db = require("../db/connection"); // Este 'db' agora é promise-compatible
 
 const categoriaController = {
-  listarCategorias: (req, res) => {
-    db.query("SELECT * FROM categoria", (err, results) => {
-      if (err) {
-        console.error("Erro ao listar categorias:", err);
-        return res.status(500).json({ erro: "Erro ao buscar categorias" });
-      }
+  listarCategorias: async (req, res) => { 
+    try {
+      const [results] = await db.query("SELECT * FROM categoria"); 
+
       res.json(results);
-    });
+    } catch (err) { // Capture o erro do await
+      console.error("Erro ao listar categorias:", err);
+      return res.status(500).json({ erro: "Erro ao buscar categorias" });
+    }
   },
 
-  criarCategoria: (req, res) => {
+  criarCategoria: async (req, res) => { 
     const { nome } = req.body;
 
     if (!nome) {
@@ -19,18 +20,19 @@ const categoriaController = {
     }
 
     const query = "INSERT INTO categoria (nome) VALUES (?)";
-    db.query(query, [nome], (err, result) => {
-      if (err) {
-        console.error("Erro ao criar categoria:", err);
-        return res.status(500).json({ erro: "Erro ao criar categoria" });
-      }
+    try {
+      // Use await para a inserção
+      const [result] = await db.query(query, [nome]);
 
       res.status(201).json({
         mensagem: "Categoria criada com sucesso",
         id: result.insertId,
         nome
       });
-    });
+    } catch (err) { // Capture o erro do await
+      console.error("Erro ao criar categoria:", err);
+      return res.status(500).json({ erro: "Erro ao criar categoria" });
+    }
   }
 };
 
