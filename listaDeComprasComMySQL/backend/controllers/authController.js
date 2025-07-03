@@ -7,7 +7,7 @@ require('dotenv').config();
 // Função auxiliar para gerar o JWT
 const generateToken = (idUsuario) => {
     return jwt.sign({ idUsuario }, process.env.JWT_SECRET, {
-        expiresIn: '2h' // no ReactGram estava 7 dias '7d', só ajustar
+        expiresIn: '7d' // no ReactGram estava 7 dias '7d', só ajustar
     });
 };
 

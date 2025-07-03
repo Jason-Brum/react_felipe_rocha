@@ -1,58 +1,147 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { Plus, Edit, Trash2, Save, X } from 'lucide-react'; 
+import { useTheme } from '../context/ThemeContext'; // <-- NOVO: Importar useTheme aqui
+import themes from '../themes'; // <-- NOVO: Importar themes aqui
 
-const AddLista = ({ idUsuario }) => {
-  const [listas, setListas] = useState([]); //Armazena as listas do usuário em um array vazio
-  const [novaLista, setNovaLista] = useState(''); //Valor do input para adicionar uma nova lista
-  const [editandoId, setEditandoId] = useState(null); //Armazena o id da lista que está sendo editada
-  const [nomeEditado, setNomeEditado] = useState(''); //Armazena o novo nome da lista que está sendo editada
+const AddLista = ({ idUsuario, userToken }) => {
+  const [listas, setListas] = useState([]);
+  const [novaLista, setNovaLista] = useState('');
+  const [editandoId, setEditandoId] = useState(null);
+  const [nomeEditado, setNomeEditado] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { logout, navigate } = useAuth();
+  const { theme } = useTheme(); // <-- NOVO: Obter o tema do contexto
+
+  async function fetchListas() {
+    if (!idUsuario || !userToken) {
+      setListas([]);
+      setLoading(false);
+      setError("Usuário não autenticado. Faça login para gerenciar listas.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`http://localhost:3001/listas/${idUsuario}`, {
+        headers: {
+          'Authorization': `Bearer ${userToken}`
+        }
+      });
+
+      if (response.status === 401 || response.status === 403) {
+          logout();
+          navigate('/login');
+          throw new Error('Sessão expirada ou acesso negado. Faça login novamente.');
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.erro || 'Falha ao buscar listas.');
+      }
+
+      const data = await response.json();
+      setListas(data);
+    } catch (err) {
+      console.error('Erro ao buscar listas:', err.message);
+      setError(err.message);
+      setListas([]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    if (!idUsuario) return; //Condição para não buscar listas se o idUsuario não estiver definido
+    fetchListas();
+  }, [idUsuario, userToken, logout, navigate, theme]); // Adicionei 'theme' como dependência para recarregar com mudança de tema
 
-    fetch(`http://localhost:3001/listas/${idUsuario}`) //Requisição para buscar as listas do usuário no backend
-      .then((res) => res.json())
-      .then((data) => setListas(data))
-      .catch((err) => console.error('Erro ao buscar listas:', err));
-  }, [idUsuario]);
-
-  const adicionarLista = () => {
-    if (novaLista.trim() === '') return; //Verifica se o campo de nova lista não está vazio
+  const adicionarLista = async () => {
+    if (novaLista.trim() === '') {
+      alert("Verifique se o campo de nova lista não está vazio!");
+      return;
+    }
+    if (!idUsuario || !userToken) {
+        alert("Você precisa estar logado para adicionar listas.");
+        return;
+    }
 
     const nova = {
       nomeDaLista: novaLista,
-      idUsuario: idUsuario,
       dataDeCriacao: new Date().toISOString().split('T')[0],
       tema: null
     };
 
-    fetch('http://localhost:3001/listas', { //
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(nova),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const novaListaComId = {
-          idLista: data.idLista,
-          nomeDaLista: data.nomeDaLista,
-          idUsuario: data.idUsuario,
-          dataDeCriacao: data.dataDeCriacao,
-          tema: data.tema,
-        };
-        setListas([...listas, novaListaComId]);
-        setNovaLista('');
-      })
-      .catch((err) => console.error('Erro ao adicionar lista:', err));
+    try {
+      const response = await fetch('http://localhost:3001/listas', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${userToken}`
+        },
+        body: JSON.stringify(nova),
+      });
+
+      if (response.status === 401 || response.status === 403) {
+          logout();
+          navigate('/login');
+          throw new Error('Sessão expirada ou acesso negado ao adicionar lista.');
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.erro || 'Falha ao adicionar lista.');
+      }
+
+      const data = await response.json();
+      setListas([...listas, data]);
+      setNovaLista('');
+      alert(data.mensagem);
+      setError(null);
+    } catch (err) {
+      console.error('Erro ao adicionar lista:', err.message);
+      alert(`Erro ao adicionar lista: ${err.message}`);
+      setError(err.message);
+    }
   };
 
-  const removerLista = (id) => {
-    fetch(`http://localhost:3001/listas/${id}`, { //Requisição para remover a lista do backend, o id é passado como parâmetro
-      method: 'DELETE',
-    })
-      .then(() => {
-        setListas(listas.filter((lista) => lista.idLista !== id)); //Remove a lista do estado local
-      })
-      .catch((err) => console.error('Erro ao excluir lista:', err));
+  const removerLista = async (id) => {
+    if (!userToken) {
+        alert("Você precisa estar logado para remover listas.");
+        return;
+    }
+    if (!window.confirm("Tem certeza que deseja remover esta lista? Isso também removerá todos os itens dela!")) {
+        return;
+    }
+    try {
+      const response = await fetch(`http://localhost:3001/listas/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${userToken}`
+        }
+      });
+
+      if (response.status === 401 || response.status === 403) {
+          logout();
+          navigate('/login');
+          throw new Error('Sessão expirada ou acesso negado ao remover lista.');
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.erro || 'Falha ao excluir lista.');
+      }
+
+      setListas(listas.filter((lista) => lista.idLista !== id));
+      alert("Lista removida com sucesso!");
+      setError(null);
+    } catch (err) {
+      console.error('Erro ao excluir lista:', err.message);
+      alert(`Erro ao excluir lista: ${err.message}`);
+      setError(err.message);
+    }
   };
 
   const iniciarEdicao = (id, nomeAtual) => {
@@ -60,27 +149,60 @@ const AddLista = ({ idUsuario }) => {
     setNomeEditado(nomeAtual);
   };
 
-  const salvarEdicao = (id) => {
-    fetch(`http://localhost:3001/listas/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nomeDaLista: nomeEditado }),
-    })
-      .then(() => {
-        setListas(
-          listas.map((lista) =>
-            lista.idLista === id ? { ...lista, nomeDaLista: nomeEditado } : lista
-          )
-        );
-        setEditandoId(null);
-        setNomeEditado('');
-      })
-      .catch((err) => console.error('Erro ao editar lista:', err));
+  const salvarEdicao = async (id) => {
+    if (nomeEditado.trim() === '') {
+        alert("O nome da lista não pode ser vazio.");
+        return;
+    }
+    if (!userToken) {
+        alert("Você precisa estar logado para editar listas.");
+        return;
+    }
+    try {
+      const response = await fetch(`http://localhost:3001/listas/${id}`, {
+        method: 'PUT',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${userToken}`
+        },
+        body: JSON.stringify({ nomeDaLista: nomeEditado }),
+      });
+
+      if (response.status === 401 || response.status === 403) {
+          logout();
+          navigate('/login');
+          throw new Error('Sessão expirada ou acesso negado ao editar lista.');
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.erro || 'Falha ao editar lista.');
+      }
+
+      setListas(
+        listas.map((lista) =>
+          lista.idLista === id ? { ...lista, nomeDaLista: nomeEditado } : lista
+        )
+      );
+      setEditandoId(null);
+      setNomeEditado('');
+      alert("Lista editada com sucesso!");
+      setError(null);
+    } catch (err) {
+      console.error('Erro ao editar lista:', err.message);
+      alert(`Erro ao editar lista: ${err.message}`);
+      setError(err.message);
+    }
   };
 
   return (
     <div className="mt-6 space-y-4">
       <h2 className="text-xl font-semibold mb-2">Suas Listas</h2>
+
+      {loading && <p className="text-center" style={{ color: themes[theme].textColor }}>Carregando listas...</p>}
+      {error && <p className="text-red-500 text-center">{error}</p>}
+      {!idUsuario && !loading && !error && <p className="text-gray-500 text-center" style={{ color: themes[theme].textColor }}>Faça login para gerenciar suas listas.</p>}
+
 
       <div className="flex gap-2">
         <input
@@ -88,57 +210,93 @@ const AddLista = ({ idUsuario }) => {
           placeholder="Nome da nova lista"
           value={novaLista}
           onChange={(e) => setNovaLista(e.target.value)}
-          className="flex-1 p-2 border border-gray-300 rounded-md"
+          // Aplicando cores do tema ao input
+          className="flex-1 p-2 border rounded-md" 
+          style={{
+              backgroundColor: themes[theme].selectBackgroundColor,
+              color: themes[theme].selectTextColor,
+              borderColor: themes[theme].accentColor,
+          }}
         />
         <button
           onClick={adicionarLista}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="px-4 py-2 rounded-md hover:brightness-110" // Removido bg-blue-600/700
+          style={{ // Aplicando cores do tema ao botão
+              backgroundColor: themes[theme].accentColor,
+              color: themes[theme].textColor,
+          }}
         >
-          Adicionar
+          <Plus size={20} />
         </button>
       </div>
 
       <ul className="space-y-2">
+        {listas.length === 0 && !loading && !error && idUsuario && (
+            <p className="text-gray-500 text-center" style={{ color: themes[theme].textColor }}>Nenhuma lista encontrada. Crie uma!</p>
+        )}
         {listas.map((lista) => (
           <li
             key={lista.idLista}
-            className="flex items-center justify-between bg-gray-100 p-2 rounded-md"
+            className="flex items-center justify-between p-2 rounded-md" // Removido bg-gray-100
+            style={{ backgroundColor: themes[theme].selectBackgroundColor }} // Aplicando cor do tema ao item da lista
           >
             {editandoId === lista.idLista ? (
               <>
                 <input
                   value={nomeEditado}
                   onChange={(e) => setNomeEditado(e.target.value)}
-                  className="flex-1 p-1 border border-gray-300 rounded-md mr-2"
+                  // Aplicando cores do tema ao input de edição
+                  className="flex-1 p-1 border rounded-md mr-2" 
+                  style={{
+                      backgroundColor: themes[theme].primaryColor, // Fundo pode ser primário ou selectBackground
+                      color: themes[theme].textColor,
+                      borderColor: themes[theme].accentColor,
+                  }}
                 />
                 <button
                   onClick={() => salvarEdicao(lista.idLista)}
-                  className="text-green-600 hover:underline mr-2"
+                  className="px-3 py-1 rounded-md hover:brightness-110 mr-2" // Removido cores Tailwind fixas
+                  style={{ 
+                      backgroundColor: themes[theme].accentColor, // Aplicando cores do tema
+                      color: themes[theme].textColor,
+                  }}
                 >
-                  Salvar
+                  <Save size={18} />
                 </button>
                 <button
                   onClick={() => setEditandoId(null)}
-                  className="text-gray-500 hover:underline"
+                  className="px-3 py-1 rounded-md hover:brightness-110" // Removido cores Tailwind fixas
+                  style={{ 
+                      backgroundColor: themes[theme].accentColor, // Aplicando cores do tema
+                      color: themes[theme].textColor,
+                  }}
                 >
-                  Cancelar
+                  <X size={18} />
                 </button>
               </>
             ) : (
               <>
-                <span>{lista.nomeDaLista}</span>
+                <span style={{ color: themes[theme].selectTextColor }}>{lista.nomeDaLista}</span> {/* Cor do texto do item */}
                 <div className="flex gap-2">
                   <button
                     onClick={() => iniciarEdicao(lista.idLista, lista.nomeDaLista)}
-                    className="text-blue-600 hover:underline"
+                    className="px-3 py-1 rounded-md hover:brightness-110" // Removido cores Tailwind fixas
+                    style={{ 
+                        backgroundColor: themes[theme].accentColor, // Aplicando cores do tema
+                        color: themes[theme].textColor,
+                    }}
                   >
-                    Renomear
+                    <Edit size={18} />
                   </button>
                   <button
                     onClick={() => removerLista(lista.idLista)}
-                    className="text-red-600 hover:underline"
+                    className="px-3 py-1 rounded-md hover:brightness-110" // Removido cores Tailwind fixas
+                    style={{ 
+                        backgroundColor: themes[theme].accentColor, // Aplicando cores do tema
+                        color: themes[theme].textColor,
+                    }}
                   >
-                    Excluir
+                    <Trash2 size={18} />
                   </button>
                 </div>
               </>

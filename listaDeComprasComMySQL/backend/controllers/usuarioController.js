@@ -3,14 +3,17 @@ const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 
 const usuarioController = {
-  listarUsuarios: (req, res) => {
-    db.query('SELECT idUsuario, nome, email, cpf, dataCadastro FROM usuario', (err, results) => {
-      if (err) {
-        console.error('Erro ao listar usuários:', err);
-        return res.status(500).json({ erro: 'Erro ao buscar usuários' });
-      }
+  // CORREÇÃO AQUI: Converter para async/await
+  listarUsuarios: async (req, res) => { // Adicionar 'async' aqui
+    try {
+      // Usar await para a query. db.query() já retorna uma Promise.
+      const [results] = await db.query('SELECT idUsuario, nome, email, cpf, dataCadastro FROM usuario');
       res.json(results);
-    });
+    } catch (err) { // Capturar o erro do await
+      console.error('Erro ao listar usuários:', err);
+      // Sempre retornar JSON em caso de erro
+      return res.status(500).json({ erro: 'Erro ao buscar usuários' });
+    }
   },
 
   criarUsuario: async (req, res) => {
@@ -22,8 +25,7 @@ const usuarioController = {
     const { nome, email, cpf, senha, dataCadastro } = req.body;
 
     try {
-      // Verifica duplicidade de email ou CPF
-      const [verifica] = await db.promise().query(
+      const [verifica] = await db.query( // Usar db.query() diretamente
         "SELECT * FROM usuario WHERE email = ? OR cpf = ?",
         [email, cpf]
       );
@@ -32,12 +34,10 @@ const usuarioController = {
         return res.status(400).json({ erro: "E-mail ou CPF já cadastrados." });
       }
 
-      // Criptografa a senha
       const salt = await bcrypt.genSalt(10);
       const senhaHash = await bcrypt.hash(senha, salt);
 
-      // Insere usuário
-      const [result] = await db.promise().query(
+      const [result] = await db.query( // Usar db.query() diretamente
         "INSERT INTO usuario (nome, email, cpf, senha, dataCadastro) VALUES (?, ?, ?, ?, ?)",
         [nome, email, cpf, senhaHash, dataCadastro]
       );
