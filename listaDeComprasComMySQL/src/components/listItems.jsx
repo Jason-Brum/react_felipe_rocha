@@ -172,7 +172,7 @@ function ListItems({ idLista, triggerUpdateChange, userToken }) {
       )}
 
       {Object.keys(groupedItems).map(categoryName => (
-        <div key={categoryName} className="mb-6">
+        <div key={categoryName} className="mb-4">
           <h2
             className="text-xl font-semibold mb-1 capitalize py-1 px-4"
             style={{ color: themes[theme].textColor }}
@@ -180,37 +180,38 @@ function ListItems({ idLista, triggerUpdateChange, userToken }) {
             {categoryName}
           </h2>
           <ul
-            // Adicionado p-3 para o UL novamente, para dar espaçamento interno geral para a lista
-            // e rounded-md para arredondar as bordas do UL
-            className="space-y-2 rounded-md shadow-md p-3" // <-- MUDANÇA AQUI: p-3 para o UL
+            // p-3 no UL para padding geral dentro do container da lista
+            className="space-y-2 rounded-md shadow-md p-3"
             style={{ backgroundColor: themes[theme].primaryColor, color: themes[theme].textColor }}
           >
-            {groupedItems[categoryName].map((item, index) => ( // Adicionado 'index' para condicionais de borda
+            {groupedItems[categoryName].map((item, index) => (
               <li key={item.idItem}
-                  // Cada LI é um flex container que estica seus filhos
-                  // Adicionado mb-2 para espaçamento entre os itens (se não for o último)
-                  className={`flex items-stretch rounded-md ${index < groupedItems[categoryName].length - 1 ? 'mb-2' : ''}`} // <-- MUDANÇA AQUI: mb-2 condicional
-                  style={{ backgroundColor: themes[theme].accentColor }} // Fundo do item individual
+                  // Flex container com gap-2 para separar item do botão da lixeira
+                  // items-stretch para garantir mesma altura
+                  // rounded-md para as bordas do LI
+                  // mb-2 para espaçamento entre os LIs (exceto o último)
+                  className={`flex gap-2 items-stretch rounded-md ${index < groupedItems[categoryName].length - 1 ? 'mb-2' : ''}`}
               >
                 <button
                   onClick={() => onToggleItemClick(item.idItem, item.estado)}
-                  // Botão do item: flex-grow para ocupar o espaço, padding para "respiro" interno
-                  className={`text-left transition-opacity text-lg flex items-center flex-grow px-3 py-2 rounded-l-md ${ // <-- MUDANÇA AQUI: px-3 py-2 rounded-l-md
+                  // Botão do item: ocupa o espaço flex-grow, padding para "respiro" interno
+                  // rounded-l-md para borda esquerda arredondada
+                  className={`text-left transition-opacity text-lg flex items-center flex-grow px-3 py-2 rounded-l-md rounded-r-md ${
                     item.isCompleted ? 'line-through opacity-70' : 'opacity-100'
                   }`}
-                  style={{ color: themes[theme].textColor }} // Apenas cor do texto
+                  style={{ color: themes[theme].textColor }}
                 >
                   {item.nome} - {item.quantidade} und
                 </button>
                 <Button
                   onClick={() => onDeleteItemClick(item.idItem)}
-                  // Botão da lixeira: flex-shrink-0, ml-auto para empurrar para direita
-                  // Padding e arredondamento customizados para casar a altura e bordas
-                  className="flex-shrink-0 rounded-r-md" // <-- MUDANÇA AQUI: rounded-r-md, removido padding classes
+                  // Botão da lixeira: não cresce, borda direita arredondada
+                  // Padding fixo e border-radius para casar visualmente
+                  className="flex-shrink-0 rounded-r-md"
                   style={{
                       backgroundColor: themes[theme].accentColor,
                       color: themes[theme].textColor,
-                      padding: '8px', // Ajustado para casar a altura (pode variar, teste!)
+                      padding: '8px', // Padding fixo
                   }}
                   aria-label={`Deletar ${item.nome}`}
                 >

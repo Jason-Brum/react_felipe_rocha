@@ -14,6 +14,8 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import AddLista from "./components/AddLista";
 import SettingsPage from "./pages/SettingsPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
 
 
 const PrivateRoute = ({ children }) => {
@@ -171,8 +173,13 @@ function App() {
         <Router>
             <AuthProvider>
                 <Routes>
+                    {/* Rotas públicas */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                    <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+                    
+                    {/* Rota privada para o conteúdo principal do aplicativo */}
 
                     <Route
                         path="/"
